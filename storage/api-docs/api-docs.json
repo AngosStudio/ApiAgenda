@@ -1,0 +1,874 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Agenda API - Documentação",
+        "version": "0.1"
+    },
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login de usuário",
+                "operationId": "99d66635c4992aeaa6aa44ff653d0563",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "example@teste.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuário autenticado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Status da solicitação",
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "description": "Token de acesso",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Status da solicitação",
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Unauthorized"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Registrar novo usuário",
+                "operationId": "08136088c4862c313b35d6518bab8d3a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário registrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Status da solicitação",
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Obter informações do usuário autenticado",
+                "operationId": "32d03117b496ae02c2543b61438d24ad",
+                "responses": {
+                    "200": {
+                        "description": "Informações do usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Status da solicitação",
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/calendar-types": {
+            "get": {
+                "tags": [
+                    "Calendar Types"
+                ],
+                "summary": "Listar tipos de calendário",
+                "operationId": "52044a95d8d924d5b3a883c551932b26",
+                "responses": {
+                    "200": {
+                        "description": "Lista de tipos de calendário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CalendarType"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Calendar Types"
+                ],
+                "summary": "Criar tipo de calendário",
+                "operationId": "aa6ef8cf12272a06b2093de56409dfb5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CalendarTypePostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tipo de calendário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CalendarType"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/calendar-types/{id}": {
+            "get": {
+                "tags": [
+                    "Calendar Types"
+                ],
+                "summary": "Obter tipo de calendário",
+                "operationId": "a8ec95b0dd63d619a6454cc2848de7a7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do tipo de calendário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de calendário obtido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CalendarType"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Calendar Types"
+                ],
+                "summary": "Deletar tipo de calendário",
+                "operationId": "deaab3c19575d64784f4a57a0bd480cc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do tipo de calendário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de calendário deletado com sucesso"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Calendar Types"
+                ],
+                "summary": "Atualizar tipo de calendário",
+                "operationId": "d50d7df0aaaa4442ab0a8c43e5e5bdec",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do tipo de calendário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CalendarTypePostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tipo de calendário atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CalendarType"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/calendars": {
+            "get": {
+                "tags": [
+                    "Calendars"
+                ],
+                "summary": "Listar calendários",
+                "operationId": "367fc8da5d32d8cc41c359cf60424df4",
+                "parameters": [
+                    {
+                        "name": "dt_start",
+                        "in": "query",
+                        "description": "Data de início",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-03-25"
+                        }
+                    },
+                    {
+                        "name": "dt_end",
+                        "in": "query",
+                        "description": "Data de fim",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-03-31"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de calendários",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Calendar"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Calendars"
+                ],
+                "summary": "Criar calendário",
+                "operationId": "144c6e36fbd7fa1c56c1c7aeb4f5fcaf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CalendarPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Calendário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Calendar"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/calendars/{id}": {
+            "get": {
+                "tags": [
+                    "Calendars"
+                ],
+                "summary": "Obter calendário",
+                "operationId": "101c5a34dab89c569fc211c251596f47",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do calendário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Calendário obtido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Calendar"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Calendars"
+                ],
+                "summary": "Deletar calendário",
+                "operationId": "9422d3884af8d9641fcd9e31634e4bee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do calendário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Calendário deletado com sucesso"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Calendars"
+                ],
+                "summary": "Atualizar calendário",
+                "operationId": "dad7d3b65e5262ba6365faf75a4055fe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do calendário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CalendarPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Calendário atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Calendar"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Listar usuários",
+                "operationId": "3eaa377974f2c319f1ef58839336bfae",
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuários",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Criar usuário",
+                "operationId": "7fc9100196c5dcb6fa1707582dc94f3b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Obter usuário",
+                "operationId": "842fe314d6ccdd70cc4590a93db2c4bb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário obtido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Deletar usuário",
+                "operationId": "9ab561518403d23652bec46d8e8be556",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário deletado com sucesso"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Atualizar usuário",
+                "operationId": "d8be5cce223e8b9ff362006947ac0028",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuário atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CalendarPostRequest": {
+                "title": "Calendar Post Request",
+                "description": "Schema de criação de Calendar.",
+                "required": [
+                    "dt_start",
+                    "dt_end",
+                    "status",
+                    "title",
+                    "calendar_type_id",
+                    "description"
+                ],
+                "properties": {
+                    "dt_start": {
+                        "description": "Data e hora inicial do Calendar (Formato: YYYY-MM-DD HH:MM:SS)",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "dt_end": {
+                        "description": "Data e hora final do Calendar (Formato: YYYY-MM-DD HH:MM:SS)",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "description": "Status do Calendar",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "Título do Calendar",
+                        "type": "string"
+                    },
+                    "calendar_type_id": {
+                        "description": "Id do Calendar Type",
+                        "type": "integer"
+                    },
+                    "description": {
+                        "description": "Descrição do Calendar",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CalendarTypePostRequest": {
+                "title": "Calendar Type Post Request",
+                "description": "Schema de criação de calendar type.",
+                "required": [
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "Nome do Calendar Type",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Descrição do Calendar Type",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserPostRequest": {
+                "title": "User Post Request",
+                "description": "Schema de criação de usuário.",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "Nome do usuário",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "E-mail do usuário",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "description": "Senha do usuário (mínimo de 8 caracteres)",
+                        "type": "string",
+                        "example": "12345678"
+                    }
+                },
+                "type": "object"
+            },
+            "Calendar": {
+                "title": "Calendar",
+                "description": "Modelo de calendário",
+                "properties": {
+                    "id": {
+                        "description": "ID do calendário",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "dt_start": {
+                        "description": "Data e hora de início do evento do calendário",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "dt_end": {
+                        "description": "Data e hora de fim do evento do calendário",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "description": "Status do calendário",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "Título do calendário",
+                        "type": "string"
+                    },
+                    "calendar_type_id": {
+                        "description": "ID do tipo de calendário associado",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "description": {
+                        "description": "Descrição do calendário",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "ID do usuário proprietário do calendário",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "created_at": {
+                        "description": "Data de criação do calendário",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Data de atualização do calendário",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "CalendarType": {
+                "title": "CalendarType",
+                "description": "Modelo de tipo de calendário",
+                "properties": {
+                    "id": {
+                        "description": "ID do tipo de calendário",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "description": "Nome do tipo de calendário",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Descrição do tipo de calendário",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "ID do usuário proprietário do tipo de calendário",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "created_at": {
+                        "description": "Data de criação do tipo de calendário",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Data de atualização do tipo de calendário",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User",
+                "description": "Modelo de usuário",
+                "properties": {
+                    "id": {
+                        "description": "ID do usuário",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Nome do usuário",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Endereço de email do usuário",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "created_at": {
+                        "description": "Data de criação do usuário",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Data de atualização do usuário",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Endpoints relacionados à autenticação de usuários"
+        },
+        {
+            "name": "Calendar Types",
+            "description": "Endpoints relacionados aos tipos de calendário"
+        },
+        {
+            "name": "Calendars",
+            "description": "Endpoints relacionados aos calendários"
+        },
+        {
+            "name": "Users",
+            "description": "Endpoints relacionados aos usuários"
+        }
+    ]
+}
